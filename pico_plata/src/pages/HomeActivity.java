@@ -2,8 +2,14 @@ package pages;
 
 import dimen.Dimens;
 import res.Strings;
+import tda.UserCar;
 
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -39,6 +45,7 @@ public class HomeActivity extends Application{
 	private Label lbtimeerror;
 	
 	private Button btcheck;
+	private Label lbcheck;
 	
 	public HomeActivity() {
 		root = new AnchorPane();
@@ -60,6 +67,7 @@ public class HomeActivity extends Application{
 		lbtimeerror.setVisible(false);
 		
 		btcheck = new Button(Strings.check);
+		lbcheck = new Label();
 	}
 	
 	public void setUpComponents() {
@@ -92,6 +100,9 @@ public class HomeActivity extends Application{
 		
 		AnchorPane.setLeftAnchor(btcheck, 20.0);
 		AnchorPane.setTopAnchor(btcheck, 150.0);
+		
+		AnchorPane.setLeftAnchor(lbcheck, 10.0);
+		AnchorPane.setBottomAnchor(lbcheck, 10.0);
 	}
 	
 	public void start(Stage stage) {
@@ -99,7 +110,7 @@ public class HomeActivity extends Application{
 		setUpButton();
 		
 		root.getChildren().addAll(lblicense, lbdate, lbtime, combotime, btcheck, date, 
-				license, lblicenseerror, lbtimeerror, time);
+				license, lblicenseerror, lbtimeerror, time, lbcheck);
 		
 		stage.setTitle(Strings.title_home);
 		stage.setScene(scene);
@@ -113,7 +124,18 @@ public class HomeActivity extends Application{
 			lblicenseerror.setVisible(false);
 			lbtimeerror.setVisible(false);
 			if(validate_information()) {
-				
+				LocalDate information = date.getValue();
+				UserCar user = null;
+				try {
+					user = new UserCar(license.getText(), 
+							getDayOfTheWeek(String.valueOf(information.getMonth().getValue()), 
+									String.valueOf(information.getDayOfMonth()), 
+									String.valueOf(information.getYear())), time.getText());
+				} catch (ParseException exception) {
+					exception.printStackTrace();
+				}
+				if(user.can_drive()) lbcheck.setText(Strings.lbcheck_good);
+				else lbcheck.setText(Strings.lbcheck_bad);
 			}
 		});
 	}
@@ -148,5 +170,15 @@ public class HomeActivity extends Application{
 		String[] sp = license.split("-");
 		if(sp.length != 2 || sp[1].length() < 3 || sp[1].length() > 4) return false;
 		return true;
+	}
+	
+	private String getDayOfTheWeek(String month, String day, String year) throws ParseException {
+        String inputDateStr = String.format("%s/%s/%s", day, month, year);
+        Date inputDate = new SimpleDateFormat("dd/MM/yyyy").parse(inputDateStr);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(inputDate);
+        String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US).toUpperCase();
+        
+		return dayOfWeek;
 	}
 }
