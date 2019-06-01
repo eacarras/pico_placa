@@ -2,11 +2,14 @@ package pages;
 
 import dimen.Dimens;
 import res.Strings;
+import tda.UserCar;
 
 import java.time.LocalDate;
-
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -14,7 +17,6 @@ import javafx.stage.Stage;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
@@ -33,12 +35,11 @@ public class HomeActivity extends Application{
 	private DatePicker date; 
 	
 	private Label lbtime;
-	private final ObservableList<String> items = FXCollections.observableArrayList();
-	private final ComboBox<String> combotime = new ComboBox<>(items);
 	private TextField time;
 	private Label lbtimeerror;
 	
-	private Button btcalcular;
+	private Button btcheck;
+	private Label lbcheck;
 	
 	public HomeActivity() {
 		root = new AnchorPane();
@@ -53,13 +54,12 @@ public class HomeActivity extends Application{
 		date = new DatePicker(LocalDate.now());
 		
 		lbtime = new Label(Strings.time);
-		items.addAll("am", "pm");
-		combotime.getSelectionModel().selectFirst();
 		time = new TextField();
 		lbtimeerror = new Label(Strings.time_error);
 		lbtimeerror.setVisible(false);
 		
-		btcalcular = new Button(Strings.calculate);
+		btcheck = new Button(Strings.check);
+		lbcheck = new Label();
 	}
 	
 	public void setUpComponents() {
@@ -87,23 +87,88 @@ public class HomeActivity extends Application{
 		AnchorPane.setRightAnchor(lbtimeerror, 10.0);
 		AnchorPane.setTopAnchor(lbtimeerror, 110.0);
 		
-		AnchorPane.setLeftAnchor(combotime, 280.0);
-		AnchorPane.setTopAnchor(combotime, 110.0);
+		AnchorPane.setLeftAnchor(btcheck, 20.0);
+		AnchorPane.setTopAnchor(btcheck, 150.0);
 		
-		AnchorPane.setLeftAnchor(btcalcular, 20.0);
-		AnchorPane.setTopAnchor(btcalcular, 150.0);
+		AnchorPane.setLeftAnchor(lbcheck, 10.0);
+		AnchorPane.setBottomAnchor(lbcheck, 10.0);
 	}
 	
 	public void start(Stage stage) {
 		setUpComponents();
+		setUpButton();
 		
-		root.getChildren().addAll(lblicense, lbdate, lbtime, combotime, btcalcular, date, 
-				license, lblicenseerror, lbtimeerror, time);
+		root.getChildren().addAll(lblicense, lbdate, lbtime, btcheck, date, 
+				license, lblicenseerror, lbtimeerror, time, lbcheck);
 		
 		stage.setTitle(Strings.title_home);
 		stage.setScene(scene);
 		stage.centerOnScreen();
 		stage.setResizable(false);
 		stage.show();
+	}
+	
+	private void setUpButton() {
+		btcheck.setOnAction(e -> {
+			lblicenseerror.setVisible(false);
+			lbtimeerror.setVisible(false);
+			if(validate_information()) {
+				LocalDate information = date.getValue();
+				UserCar user = null;
+				try {
+					user = new UserCar(license.getText(), 
+							getDayOfTheWeek(String.valueOf(information.getMonth().getValue()), 
+									String.valueOf(information.getDayOfMonth()), 
+									String.valueOf(information.getYear())), time.getText());
+				} catch (ParseException exception) {
+					exception.printStackTrace();
+				}
+				if(user.can_drive()) lbcheck.setText(Strings.lbcheck_good);
+				else lbcheck.setText(Strings.lbcheck_bad);
+			}
+		});
+	}
+	
+	private boolean validate_information() {
+		if(license.getText().isEmpty() || !is_valid_license(license.getText())) {
+			lblicenseerror.setVisible(true);
+			return false;
+		}
+		else if(time.getText().isEmpty() || is_number(time.getText()) || time.getText().split(":").length < 2 ||
+				time.getText().split(":").length > 2) {
+			lbtimeerror.setVisible(true);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean is_number(String time) {
+        boolean resultado;
+
+        try {
+            Integer.parseInt(time);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+	
+	private boolean is_valid_license(String license) {
+		String[] sp = license.split("-");
+		if(sp.length != 2 || sp[1].length() < 3 || sp[1].length() > 4) return false;
+		return true;
+	}
+	
+	private String getDayOfTheWeek(String month, String day, String year) throws ParseException {
+        String inputDateStr = String.format("%s/%s/%s", day, month, year);
+        Date inputDate = new SimpleDateFormat("dd/MM/yyyy").parse(inputDateStr);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(inputDate);
+        String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US).toUpperCase();
+        
+		return dayOfWeek;
 	}
 }
