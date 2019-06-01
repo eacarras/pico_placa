@@ -11,16 +11,12 @@ import java.util.Calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
@@ -39,8 +35,6 @@ public class HomeActivity extends Application{
 	private DatePicker date; 
 	
 	private Label lbtime;
-	private final ObservableList<String> items = FXCollections.observableArrayList();
-	private final ComboBox<String> combotime = new ComboBox<>(items);
 	private TextField time;
 	private Label lbtimeerror;
 	
@@ -60,8 +54,6 @@ public class HomeActivity extends Application{
 		date = new DatePicker(LocalDate.now());
 		
 		lbtime = new Label(Strings.time);
-		items.addAll("am", "pm");
-		combotime.getSelectionModel().selectFirst();
 		time = new TextField();
 		lbtimeerror = new Label(Strings.time_error);
 		lbtimeerror.setVisible(false);
@@ -95,9 +87,6 @@ public class HomeActivity extends Application{
 		AnchorPane.setRightAnchor(lbtimeerror, 10.0);
 		AnchorPane.setTopAnchor(lbtimeerror, 110.0);
 		
-		AnchorPane.setLeftAnchor(combotime, 280.0);
-		AnchorPane.setTopAnchor(combotime, 110.0);
-		
 		AnchorPane.setLeftAnchor(btcheck, 20.0);
 		AnchorPane.setTopAnchor(btcheck, 150.0);
 		
@@ -109,7 +98,7 @@ public class HomeActivity extends Application{
 		setUpComponents();
 		setUpButton();
 		
-		root.getChildren().addAll(lblicense, lbdate, lbtime, combotime, btcheck, date, 
+		root.getChildren().addAll(lblicense, lbdate, lbtime, btcheck, date, 
 				license, lblicenseerror, lbtimeerror, time, lbcheck);
 		
 		stage.setTitle(Strings.title_home);
@@ -145,7 +134,8 @@ public class HomeActivity extends Application{
 			lblicenseerror.setVisible(true);
 			return false;
 		}
-		else if(time.getText().isEmpty() || is_number(time.getText())) {
+		else if(time.getText().isEmpty() || is_number(time.getText()) || time.getText().split(":").length < 2 ||
+				time.getText().split(":").length > 2) {
 			lbtimeerror.setVisible(true);
 			return false;
 		}
