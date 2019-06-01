@@ -38,7 +38,7 @@ public class HomeActivity extends Application{
 	private TextField time;
 	private Label lbtimeerror;
 	
-	private Button btcalcular;
+	private Button btcheck;
 	
 	public HomeActivity() {
 		root = new AnchorPane();
@@ -59,7 +59,7 @@ public class HomeActivity extends Application{
 		lbtimeerror = new Label(Strings.time_error);
 		lbtimeerror.setVisible(false);
 		
-		btcalcular = new Button(Strings.calculate);
+		btcheck = new Button(Strings.check);
 	}
 	
 	public void setUpComponents() {
@@ -90,14 +90,15 @@ public class HomeActivity extends Application{
 		AnchorPane.setLeftAnchor(combotime, 280.0);
 		AnchorPane.setTopAnchor(combotime, 110.0);
 		
-		AnchorPane.setLeftAnchor(btcalcular, 20.0);
-		AnchorPane.setTopAnchor(btcalcular, 150.0);
+		AnchorPane.setLeftAnchor(btcheck, 20.0);
+		AnchorPane.setTopAnchor(btcheck, 150.0);
 	}
 	
 	public void start(Stage stage) {
 		setUpComponents();
+		setUpButton();
 		
-		root.getChildren().addAll(lblicense, lbdate, lbtime, combotime, btcalcular, date, 
+		root.getChildren().addAll(lblicense, lbdate, lbtime, combotime, btcheck, date, 
 				license, lblicenseerror, lbtimeerror, time);
 		
 		stage.setTitle(Strings.title_home);
@@ -105,5 +106,47 @@ public class HomeActivity extends Application{
 		stage.centerOnScreen();
 		stage.setResizable(false);
 		stage.show();
+	}
+	
+	private void setUpButton() {
+		btcheck.setOnAction(e -> {
+			lblicenseerror.setVisible(false);
+			lbtimeerror.setVisible(false);
+			if(validate_information()) {
+				
+			}
+		});
+	}
+	
+	private boolean validate_information() {
+		if(license.getText().isEmpty() || !is_valid_license(license.getText())) {
+			lblicenseerror.setVisible(true);
+			return false;
+		}
+		else if(time.getText().isEmpty() || is_number(time.getText())) {
+			lbtimeerror.setVisible(true);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean is_number(String time) {
+        boolean resultado;
+
+        try {
+            Integer.parseInt(time);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+
+        return resultado;
+    }
+	
+	private boolean is_valid_license(String license) {
+		String[] sp = license.split("-");
+		if(sp.length != 2 || sp[1].length() < 3 || sp[1].length() > 4) return false;
+		return true;
 	}
 }

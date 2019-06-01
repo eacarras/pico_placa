@@ -14,7 +14,7 @@ public class Strings {
 	public static String license = "Licencia:";
 	public static String date = "Fecha:";
 	public static String time = "Hora:";
-	public static String calculate = "Verificar";
+	public static String check = "Verificar";
 	public static String license_error = "Ingrese una matricula correcta para continuar";
 	public static String time_error = "Ingrese una hora correcta para continuar";
 }
