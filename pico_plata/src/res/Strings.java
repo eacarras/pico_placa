@@ -19,4 +19,5 @@ public class Strings {
 	public static String time_error = "Ingrese una hora correcta para continuar con formato hh:mm";
 	public static String lbcheck_good = "El carro puede conducir a la hora consultada..";
 	public static String lbcheck_bad = "El carro no puede conducir a la hora consultada..";
+	public static String show_table = "Mostrar tabla de horarios";
 }

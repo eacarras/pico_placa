@@ -3,6 +3,7 @@ package pages;
 import dimen.Dimens;
 import res.Strings;
 import tda.UserCar;
+import methods.Methods;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -14,7 +15,6 @@ import java.text.SimpleDateFormat;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -41,6 +41,8 @@ public class HomeActivity extends Application{
 	private Button btcheck;
 	private Label lbcheck;
 	
+	private Button btshow_table;
+	
 	public HomeActivity() {
 		root = new AnchorPane();
 		scene = new Scene(root, Dimens.width_home, Dimens.height_home);
@@ -60,6 +62,8 @@ public class HomeActivity extends Application{
 		
 		btcheck = new Button(Strings.check);
 		lbcheck = new Label();
+		
+		btshow_table = new Button(Strings.show_table);
 	}
 	
 	public void setUpComponents() {
@@ -92,6 +96,9 @@ public class HomeActivity extends Application{
 		
 		AnchorPane.setLeftAnchor(lbcheck, 10.0);
 		AnchorPane.setBottomAnchor(lbcheck, 10.0);
+		
+		AnchorPane.setRightAnchor(btshow_table, 10.0);
+		AnchorPane.setBottomAnchor(btshow_table, 10.0);
 	}
 	
 	public void start(Stage stage) {
@@ -99,7 +106,7 @@ public class HomeActivity extends Application{
 		setUpButton();
 		
 		root.getChildren().addAll(lblicense, lbdate, lbtime, btcheck, date, 
-				license, lblicenseerror, lbtimeerror, time, lbcheck);
+				license, lblicenseerror, lbtimeerror, time, lbcheck, btshow_table);
 		
 		stage.setTitle(Strings.title_home);
 		stage.setScene(scene);
@@ -126,6 +133,10 @@ public class HomeActivity extends Application{
 				if(user.can_drive()) lbcheck.setText(Strings.lbcheck_good);
 				else lbcheck.setText(Strings.lbcheck_bad);
 			}
+		});
+		
+		btshow_table.setOnAction(e -> {
+			root.getChildren().add(Methods.getTable());
 		});
 	}
 	
