@@ -3,6 +3,7 @@ package pages;
 import dimen.Dimens;
 import res.Strings;
 import tda.UserCar;
+import methods.Methods;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -22,6 +23,9 @@ import javafx.scene.control.TextField;
 
 import javafx.scene.layout.AnchorPane;
 
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+
 public class HomeActivity extends Application{
 	
 	private AnchorPane root;
@@ -39,7 +43,11 @@ public class HomeActivity extends Application{
 	private Label lbtimeerror;
 	
 	private Button btcheck;
-	private Label lbcheck;
+	
+	private Button btshow_table;
+	
+	private final ImageView image_good = new ImageView(new Image("file:src/res/good.png"));
+	private final ImageView image_bad = new ImageView(new Image("file:src/res/bad.png"));
 	
 	public HomeActivity() {
 		root = new AnchorPane();
@@ -59,7 +67,11 @@ public class HomeActivity extends Application{
 		lbtimeerror.setVisible(false);
 		
 		btcheck = new Button(Strings.check);
-		lbcheck = new Label();
+		
+		btshow_table = new Button(Strings.show_table);
+		
+		image_good.setVisible(false);
+		image_bad.setVisible(false);
 	}
 	
 	public void setUpComponents() {
@@ -90,16 +102,23 @@ public class HomeActivity extends Application{
 		AnchorPane.setLeftAnchor(btcheck, 20.0);
 		AnchorPane.setTopAnchor(btcheck, 150.0);
 		
-		AnchorPane.setLeftAnchor(lbcheck, 10.0);
-		AnchorPane.setBottomAnchor(lbcheck, 10.0);
+		AnchorPane.setLeftAnchor(image_good, 30.0);
+		AnchorPane.setTopAnchor(image_good, 190.0);
+		
+		AnchorPane.setLeftAnchor(image_bad, 30.0);
+		AnchorPane.setTopAnchor(image_bad, 190.0);
+		
+		AnchorPane.setRightAnchor(btshow_table, 10.0);
+		AnchorPane.setBottomAnchor(btshow_table, 10.0);
 	}
 	
 	public void start(Stage stage) {
 		setUpComponents();
+		setUpImage();
 		setUpButton();
 		
 		root.getChildren().addAll(lblicense, lbdate, lbtime, btcheck, date, 
-				license, lblicenseerror, lbtimeerror, time, lbcheck);
+				license, lblicenseerror, lbtimeerror, time, btshow_table, image_good, image_bad);
 		
 		stage.setTitle(Strings.title_home);
 		stage.setScene(scene);
@@ -108,10 +127,20 @@ public class HomeActivity extends Application{
 		stage.show();
 	}
 	
+	private void setUpImage() {
+		image_good.setFitHeight(100.0);
+		image_good.setFitWidth(100.0);
+		
+		image_bad.setFitHeight(100.0);
+		image_bad.setFitWidth(100.0);
+	}
+	
 	private void setUpButton() {
 		btcheck.setOnAction(e -> {
 			lblicenseerror.setVisible(false);
 			lbtimeerror.setVisible(false);
+			image_bad.setVisible(false);
+			image_good.setVisible(false);
 			if(validate_information()) {
 				LocalDate information = date.getValue();
 				UserCar user = null;
@@ -123,9 +152,19 @@ public class HomeActivity extends Application{
 				} catch (ParseException exception) {
 					exception.printStackTrace();
 				}
-				if(user.can_drive()) lbcheck.setText(Strings.lbcheck_good);
-				else lbcheck.setText(Strings.lbcheck_bad);
+				if(user.can_drive()) { 
+					image_good.setVisible(true);
+					Methods.showAlertDialog(Strings.can_drive);
+				}
+				else {
+					image_bad.setVisible(true);
+					Methods.showAlertDialog(Strings.cant_drive);
+				}
 			}
+		});
+		
+		btshow_table.setOnAction(e -> {
+			root.getChildren().add(Methods.getTable());
 		});
 	}
 	
