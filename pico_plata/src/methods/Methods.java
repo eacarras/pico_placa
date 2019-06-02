@@ -1,6 +1,7 @@
 package methods;
 
 import tda.TableTDA;
+import res.Strings;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +11,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.scene.layout.AnchorPane;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.StageStyle;
  
 public class Methods {
  
@@ -45,5 +50,13 @@ public class Methods {
         AnchorPane.setBottomAnchor(table, 40.0);
         
         return table;
+    }
+    
+    public static void showAlertDialog(String dialog_content) {
+    	Alert alert_exit = new Alert(AlertType.INFORMATION);
+		alert_exit.setTitle(Strings.dialog_title);
+		alert_exit.setContentText(dialog_content);
+		alert_exit.initStyle(StageStyle.UTILITY);
+		alert_exit.showAndWait();
     }
 } 

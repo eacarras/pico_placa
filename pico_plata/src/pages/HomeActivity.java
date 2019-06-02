@@ -152,8 +152,14 @@ public class HomeActivity extends Application{
 				} catch (ParseException exception) {
 					exception.printStackTrace();
 				}
-				if(user.can_drive()) image_good.setVisible(true);
-				else image_bad.setVisible(true);
+				if(user.can_drive()) { 
+					image_good.setVisible(true);
+					Methods.showAlertDialog(Strings.can_drive);
+				}
+				else {
+					image_bad.setVisible(true);
+					Methods.showAlertDialog(Strings.cant_drive);
+				}
 			}
 		});
 		

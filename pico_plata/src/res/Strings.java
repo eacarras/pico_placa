@@ -18,4 +18,9 @@ public class Strings {
 	public static String license_error = "Ingrese una matricula correcta para continuar";
 	public static String time_error = "Ingrese una hora correcta para continuar con formato hh:mm";
 	public static String show_table = "Mostrar tabla de horarios";
+	public static String can_drive = "El usuario puede usar su vehiculo..";
+	public static String cant_drive = "El usuario no puede usar su vehiculo..";
+	
+	// Strings for dialogs
+	public static String dialog_title = "Cuadro de informacion";
 }
